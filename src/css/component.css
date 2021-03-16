@@ -1,0 +1,33 @@
+.block{
+	background-color: rgb(151, 185, 247);
+	border-radius: 20px;
+	padding: 20px;
+	margin-bottom: 15px;
+}
+
+.blockTitle{
+	width: 100%;
+	margin: 0%;
+}
+
+.spotName{
+	display: inline-block;
+	width: 70%;
+	font-weight: bold;
+}
+
+.city{
+	display: inline-block;
+	width: 30%;
+	right: 0%;
+	text-align: right;
+}
+
+.blockContent{
+	width: 100%;
+	margin-top: 15px;
+}
+
+.list{
+	width: 100%;
+}
