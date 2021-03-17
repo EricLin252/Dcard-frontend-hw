@@ -5,27 +5,9 @@ import reportWebVitals from './js/reportWebVitals';
 
 import comp from './js/component'
 
-const setBlocks = () => {
-	let output = [];
-	for(let i = 0; i < 30; ++i)
-		output.push(<comp.Block key={i}/>);
-	return output;
-}
-
-const setCity = () => {
-	let output = [];
-	output.push(<option key={0} value="">所有城市</option>);
-	return output;
-}
-
 ReactDOM.render(
 	<React.StrictMode>
-		<h1 className="title">交通部觀光景點大蒐集</h1><span className="selectCity">
-			<select defaultValue="">{setCity()}</select>
-		</span>
-		<div className="content">
-			{setBlocks()}
-		</div>
+		<comp.Page />
 	</React.StrictMode>,
 	document.getElementById('root')
 );

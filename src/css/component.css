@@ -8,19 +8,7 @@
 .blockTitle{
 	width: 100%;
 	margin: 0%;
-}
-
-.spotName{
-	display: inline-block;
-	width: 70%;
 	font-weight: bold;
-}
-
-.city{
-	display: inline-block;
-	width: 30%;
-	right: 0%;
-	text-align: right;
 }
 
 .blockContent{
@@ -30,4 +18,7 @@
 
 .list{
 	width: 100%;
+	height: 85%;
+	padding: 15px;
+	overflow-y: scroll;
 }
