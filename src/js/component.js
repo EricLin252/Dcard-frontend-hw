@@ -23,7 +23,6 @@ class List extends Component{
 		this.checkScroll = this.checkScroll.bind(this);
 		this.setBlocks = this.setBlocks.bind(this);
 		this.state = {
-			blockAmt: 0,
 			loading: true
 		}
 	}
@@ -35,7 +34,9 @@ class List extends Component{
 		let scrollHeight = el.scrollHeight;
 
 		if(scrollHeight - (windowHeight + scrollTop) < 1){
-			console.log("end");
+			this.setState({
+				loading: true
+			});
 		}
 	}
 
@@ -43,33 +44,33 @@ class List extends Component{
 		this.loadData();
 	}
 
-	componentDidUpdate(prevProps){
-        if(prevProps.selectCity !== this.props.selectCity){
-			console.log("notice change city");
+	shouldComponentUpdate(nextProps, nextStates){
+        if(nextProps.selectCity !== this.props.selectCity){
+			db.clearData();
+			document.getElementById("list").scrollTop = 0;
             this.setState({
-				blockAmt: 0,
 				loading: true
-			}, () => {
-				db.clearData();
-				this.loadData();
-				document.getElementById("list").scrollTop = 0;
 			});
         }
+
+		if(nextStates.loading !== this.state.loading){
+			if(nextStates.loading == false) return true;
+			this.loadData();
+		}
+
+		return false;
     }
 
 	loadData(){
-		db.fetchData(30, this.state.blockAmt, this.props.selectCity)
+		db.fetchData(30, this.props.selectCity)
 		.then(() => {
-			console.log("complete");
 			this.setState({
-				blockAmt: db.getDataLen(),
 				loading: false
 			});
 		});
 	}
 
 	setBlocks(){
-		console.log("rendering...");
 		let data = db.getData();
 		console.log(data);
 		let output = [];
@@ -87,6 +88,7 @@ class List extends Component{
 		return(
 			<div id="list" className="list" onScroll={this.checkScroll}>
 				{this.setBlocks()}
+				<div className="loading">loading...</div>
 			</div>
 		);
 	}

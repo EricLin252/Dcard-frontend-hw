@@ -22,3 +22,8 @@
 	padding: 15px;
 	overflow-y: scroll;
 }
+
+.loading{
+	width: 100%;
+	text-align: center;
+}
