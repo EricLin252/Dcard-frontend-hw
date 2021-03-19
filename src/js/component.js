@@ -29,7 +29,7 @@ class List extends Component{
 
 	checkScroll(event){
 		let el = event.currentTarget;
-    	let scrollTop = el.scrollTop;
+		let scrollTop = el.scrollTop;
 		let windowHeight = el.clientHeight;
 		let scrollHeight = el.scrollHeight;
 
@@ -44,26 +44,23 @@ class List extends Component{
 		this.loadData();
 	}
 
-	shouldComponentUpdate(nextProps, nextStates){
-        if(nextProps.selectCity !== this.props.selectCity){
+	componentDidUpdate(prevProps, prevState){
+		if(prevProps.selectCity !== this.props.selectCity){
 			db.clearData();
 			document.getElementById("list").scrollTop = 0;
-            this.setState({
+			this.setState({
 				loading: true
 			});
-        }
-
-		if(nextStates.loading !== this.state.loading){
-			if(nextStates.loading == false) return true;
-			this.loadData();
 		}
-
-		return false;
-    }
+		else if(prevState.loading !== this.state.loading){
+			if(prevState.loading == false) this.loadData();
+		}
+	}
 
 	loadData(){
 		db.fetchData(30, this.props.selectCity)
-		.then(() => {
+		.then((val) => {
+			console.log(val);
 			this.setState({
 				loading: false
 			});

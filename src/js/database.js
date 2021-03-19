@@ -1,7 +1,7 @@
 import jsSHA from "jssha";
 
 var data = [];
-var fetching = false;
+var fetchFlag = false;
 const citySet = {
 	"所有城市": "",
 	"臺北市": "Taipei",
@@ -42,18 +42,17 @@ const GetAuthorizationHeader = () => {
 }
 
 const fetchData = (amt, city) => {
-	fetching = true;
-	if(city !== "") city = "/" + city;
-
-	let requestURL	= "https://ptx.transportdata.tw/MOTC/v2/Tourism/ScenicSpot"
-	requestURL		+= city
-	requestURL		+= "?$select=Name%2CDescription"
-	requestURL		+= "&$top=" + amt;
-	requestURL		+= "&$skip=" + data.length;
-	requestURL		+= "&$format=JSON";
-	console.log(requestURL);
-
 	return new Promise((resolve, reject) => {
+		if(city !== "") city = "/" + city;
+		let requestURL	= "https://ptx.transportdata.tw/MOTC/v2/Tourism/ScenicSpot"
+		requestURL		+= city
+		requestURL		+= "?$select=Name%2CDescription"
+		requestURL		+= "&$top=" + amt;
+		requestURL		+= "&$skip=" + data.length;
+		requestURL		+= "&$format=JSON";
+		console.log(requestURL);
+		fetchFlag = true;
+
 		fetch(
 			requestURL,
 			{
@@ -61,12 +60,14 @@ const fetchData = (amt, city) => {
 				headers: GetAuthorizationHeader
 			}
 		)
-		.then(
-			result => result.json()
-		)
 		.then(result => {
-			if(fetching) data = data.concat(result);
-			fetching = false;
+			if(!result.ok) throw new Error(result.statusText);
+			return result.json();
+		})
+		.then(result => {
+			console.log("receive");
+			if(fetchFlag) data = data.concat(result);
+			fetchFlag = false;
 			resolve("Success");
 		})
 		.catch((err) => {
