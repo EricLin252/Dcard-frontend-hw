@@ -1,70 +1,48 @@
-# Getting Started with Create React App
+# Dcard-frontend-hw
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## 網頁功能
+- 右上選單可選擇要顯示的都市景點，或是選擇"所有都市"以顯示所有景點
+- 若景點的右方出現向下箭頭，可點選景點標題，即可展開景點的詳細描述
+- 持續向下滑動，可以更新更多景點，若此都市已無更多景點，會於最下方顯示"沒有更多景點了"
 
-## Available Scripts
+## 程式架構
+本網站是由三個component構成，並由一份database.js負責操作資料讀取的工作
 
-In the project directory, you can run:
+- Block: 顯示一個景點的名字，並可點選開啟景點的詳述
+  > props.spotName: 景點名  
+  > props.content (optional): 景點詳述  
+  > state.openContent: 決定詳述內容是否顯示
 
-### `npm start`
+- List: 顯示目前選擇的都市的所有景點，下滑可讀取更多景點
+  > props.selectCity: 目前顯示的都市  
+  > state.loading: 決定是否載入新資料  
+  > loadData(): 命令dataBase.js更新data  
+  > setBlocks(): 渲染各景點的Block  
+  > checkScroll(): 確認是否滑到頁面底部
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+- Page: 包裹整個應用的元件
+  > state.selectCity: 使用者選擇的都市
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+- database.js: 控制所有對資料的操作
+  > data: 暫存目前所有讀入的景點資料  
+  > dataEnd: 紀錄目前是否已讀到資料結尾  
+  > fetchData(amt, city): 根據要求的讀入筆數amt與讀入都市city向政府的資料庫獲取資料，並新增進data中  
+  > getData(): component獲得資料的途徑  
+  > clearData(): component可以呼叫這個函數清空暫存資料
 
-### `npm test`
+## 資料流與程式運行順序
+- 當用戶開啟網站時
+  1. setBlocks()會先根據getData()得出的空資料陣列繪製出空的List
+  2. List的componentDidMount()呼叫一次loadData()
+  3. loadData()呼叫fetchData(30, "")，結束後將state.loading設為false
+  4. List再次渲染，setBlocks()即可獲得剛剛讀入的資料
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+- 當用戶切換都市時
+  1. Page更新自身的state.selectCity，使其傳遞至List的props.selectCity
+  2. List的componentDidUpdate()得知選擇的都市更動，呼叫clearData()清空資料，並將state.loading設為true
+  3. state.loading作為更新的信號，使componentDidUpdate()呼叫loadData()
+  4. 同上面的 "當用戶開啟網站時" 的4~5步，完成渲染網頁
 
-### `npm run build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+- 當用戶繼續下滑頁面至底時
+  1. List的checkScroll()在確認到頁面滑動到底部時，將state.loading設為true
+  2. 同上面的 "當用戶切換都市時" 的3~4步，完成渲染網頁
