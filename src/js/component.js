@@ -5,13 +5,37 @@ import db from "./database"
 class Block extends Component{
 	constructor(props){
 		super(props);
+		this.setContent = this.setContent.bind(this);
+		this.setDropdown = this.setDropdown.bind(this);
+		this.state = {
+			openContent: false
+		}
+	}
+
+	setDropdown(){
+		this.setState({
+			openContent: !this.state.openContent
+		});
+	}
+
+	setContent(){
+		let output = [];
+		if(this.props.content){
+			output.push(
+				<div key="dropdown" className="dropdownBtn">{(this.state.openContent)? "▲":"▼"}</div>
+			);
+			output.push(
+				<div key="content" className={"blockContent" + (this.state.openContent? " showContent":"")}>{this.props.content}</div>
+			);
+		}
+		return output;
 	}
 
 	render(){
 		return(
-			<div className="block">
+			<div className="block" onClick={this.setDropdown}>
 				<p className="blockTitle">{this.props.spotName}</p>
-				<div className="blockContent">{this.props.content}</div>
+				{this.setContent()}
 			</div>
 		);
 	}
@@ -53,7 +77,7 @@ class List extends Component{
 			});
 		}
 		else if(prevState.loading !== this.state.loading){
-			if(prevState.loading == false) this.loadData();
+			if(prevState.loading === false) this.loadData();
 		}
 	}
 
@@ -85,7 +109,7 @@ class List extends Component{
 		return(
 			<div id="list" className="list" onScroll={this.checkScroll}>
 				{this.setBlocks()}
-				<div className="loading">loading...</div>
+				<div className="loading">{(db.isDataEnd())? "沒有更多景點了":"下載中..."}</div>
 			</div>
 		);
 	}

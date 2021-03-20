@@ -1,7 +1,7 @@
 import jsSHA from "jssha";
 
 var data = [];
-var fetchFlag = false;
+var dataEnd = false;
 const citySet = {
 	"所有城市": "",
 	"臺北市": "Taipei",
@@ -43,6 +43,8 @@ const GetAuthorizationHeader = () => {
 
 const fetchData = (amt, city) => {
 	return new Promise((resolve, reject) => {
+		if(dataEnd) resolve("dataEnd");
+
 		if(city !== "") city = "/" + city;
 		let requestURL	= "https://ptx.transportdata.tw/MOTC/v2/Tourism/ScenicSpot"
 		requestURL		+= city
@@ -51,7 +53,6 @@ const fetchData = (amt, city) => {
 		requestURL		+= "&$skip=" + data.length;
 		requestURL		+= "&$format=JSON";
 		console.log(requestURL);
-		fetchFlag = true;
 
 		fetch(
 			requestURL,
@@ -66,8 +67,8 @@ const fetchData = (amt, city) => {
 		})
 		.then(result => {
 			console.log("receive");
-			if(fetchFlag) data = data.concat(result);
-			fetchFlag = false;
+			data = data.concat(result);
+			if(result.length < amt) dataEnd = true;
 			resolve("Success");
 		})
 		.catch((err) => {
@@ -87,6 +88,11 @@ const getDataLen = () => {
 
 const clearData = () => {
 	data = [];
+	dataEnd = false;
 }
 
-export default {citySet, getData, getDataLen, fetchData, clearData}
+const isDataEnd = () => {
+	return dataEnd;
+}
+
+export default {citySet, getData, getDataLen, fetchData, clearData, isDataEnd}

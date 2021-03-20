@@ -1,4 +1,5 @@
 .block{
+	position: relative;
 	background-color: rgb(151, 185, 247);
 	border-radius: 20px;
 	padding: 20px;
@@ -12,8 +13,22 @@
 }
 
 .blockContent{
+	display: none;
 	width: 100%;
 	margin-top: 15px;
+}
+
+.showContent{
+	display: block;
+}
+
+.dropdownBtn{
+	position: absolute;
+	top: 20px;
+	right: 20px;
+	font-size: larger;
+	background-color: transparent;
+	border: none;
 }
 
 .list{
