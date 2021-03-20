@@ -136,6 +136,7 @@ class List extends Component{
 	}
 }
 
+//Page: 包裹整個應用的元件
 class Page extends Component{
 	//state.selectCity: 紀錄現在選擇顯示哪個都市
 	constructor(){
