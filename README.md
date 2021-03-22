@@ -1,4 +1,4 @@
-# Dcard-frontend-hw
+# Taiwan Spot Collection
 
 ## 網頁功能
 - 右上選單可選擇要顯示的都市景點，或是選擇"所有都市"以顯示所有景點
